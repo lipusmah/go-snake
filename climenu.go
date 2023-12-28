@@ -44,8 +44,12 @@ func (m *Menu) renderMenu(redraw bool) {
 		cursor := "  "
 		if index == m.CursorPosition {
 			cursor = " >"
+			fmt.Printf(colors["cyan"])
+			fmt.Printf("\r%s %s%s", cursor, menuItemText, newLine)
+			fmt.Printf(colors["clear"])
+		} else {
+			fmt.Printf("\r%s %s%s", cursor, menuItemText, newLine)
 		}
-		fmt.Printf("\r%s %s%s", cursor, menuItemText, newLine)
 	}
 }
 
@@ -55,12 +59,10 @@ func (m *Menu) Display() string {
 		fmt.Printf("\033[?25h")
 	}()
 
-	// Clear the screen
-	// fmt.Printf("\033[2J")
 	// Turn the terminal cursor off
 	fmt.Printf("\033[?25l")
 
-	fmt.Printf("%s\n", m.Prompt+":")
+	fmt.Printf("\r%s\n", m.Prompt+":")
 	m.renderMenu(false)
 
 	for {
