@@ -3,12 +3,8 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strconv"
 )
-
-type GridSize struct {
-	width  int
-	height int
-}
 
 var sizeOptions = map[string]GridSize{
 	"1": {width: 10, height: 10},
@@ -20,27 +16,30 @@ var sizeOptions = map[string]GridSize{
 	"7": {width: 60, height: 40},
 }
 
-var colors = map[string]string{
-	"red":     "\x1b[1;91m",
-	"cyan":    "\x1b[1;36m",
-	"clear":   "\x1b[m",
-	"magenta": "\x1b[95m",
-	"green":   "\x1b[92m",
+var speedOptions = [12]int{
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
 }
 
-var speedOptions = map[string]int{
-	"1":  1,
-	"2":  2,
-	"3":  3,
-	"4":  4,
-	"5":  5,
-	"6":  6,
-	"7":  7,
-	"8":  8,
-	"9":  9,
-	"10": 10,
-	"11": 11,
-	"12": 12,
+var colors = map[string]string{
+	"red":   "\x1b[1;91m",
+	"cyan":  "\x1b[1;36m",
+	"clear": "\x1b[m",
+}
+
+type GridSize struct {
+	width  int
+	height int
 }
 
 func getSizeOption() string {
@@ -60,16 +59,10 @@ func getSizeOption() string {
 }
 
 func getSpeedOption() string {
-	keys := make([]string, 0, len(speedOptions))
-
-	for k := range speedOptions {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
 	menu := CreateMenu("Select speed")
-	for _, v := range keys {
+	for v := range speedOptions {
 		var value = speedOptions[v]
-		menu.AddMenuItem(fmt.Sprintf("%d", value), v)
+		menu.AddMenuItem(fmt.Sprintf("%d", value), strconv.Itoa(v))
 	}
 	return menu.Display()
 }
@@ -87,7 +80,11 @@ func main() {
 	fmt.Printf("\033[%dA", len(speedOptions)+1)
 	fmt.Printf("\033[0J")
 
-	var game = createSnakeGame(sizeOptions[selectedSizeOption], speedOptions[selectedSpeedOption])
+	speed, err := strconv.Atoi(selectedSpeedOption)
+	if err != nil {
+		fmt.Printf("Error with configuration")
+	}
+	var game = createSnakeGame(sizeOptions[selectedSizeOption], speed)
 	game.Run()
 	fmt.Printf("\n")
 }

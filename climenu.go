@@ -68,7 +68,7 @@ func (m *Menu) Display() string {
 	for {
 		keyCode := GetInput()
 		if keyCode == escape {
-			return ""
+			return "ESC"
 		} else if keyCode == enter {
 			menuItem := m.Items[m.CursorPosition]
 			fmt.Println("\r")
